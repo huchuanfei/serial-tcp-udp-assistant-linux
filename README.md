@@ -5,6 +5,7 @@
 配套提供 PyInstaller 打包脚本，可生成不依赖 Python 环境的独立可执行文件（x86_64 本机版、aarch64 / Orin NX 版均已提供）。
 
 ---
+<img width="2160" height="1440" alt="8a54cd5c2212946d2b109bf343a4bdc4" src="https://github.com/user-attachments/assets/a540df77-8ccb-4507-b04a-dac105de05be" />
 
 ## 工具一览
 
