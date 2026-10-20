@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# PyInstaller 构建中间产物（二进制产物在 dist/ 与 dist_orin/，需保留）
+build/
+*.spec
+
+# 构建脚本创建的临时环境
+.build_venv/
+.venv/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store

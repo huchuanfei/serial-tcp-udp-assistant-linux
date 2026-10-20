@@ -1,0 +1,33 @@
+# 目标: Orin NX Ubuntu 20.04 (glibc 2.31) — 必须用 ubuntu:20.04 构建
+# docker buildx build --platform linux/arm64 -f Dockerfile.export -o type=local,dest=./dist_orin .
+
+# syntax=docker/dockerfile:1
+FROM --platform=linux/arm64 ubuntu:20.04 AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip python3-venv python3-tk python3-dev binutils \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /src
+COPY udp_server.py udp_client.py tcp_server.py tcp_client.py serial_assistant.py ./
+
+RUN python3 -m venv /venv \
+    && /venv/bin/pip install --no-cache-dir -q \
+         'pyinstaller==5.13.2' 'pyinstaller-hooks-contrib==2023.10' pyserial \
+    && mkdir -p /out \
+    && for spec in \
+         "udp_server:udp_server_debug" \
+         "udp_client:udp_client_debug" \
+         "tcp_server:tcp_server_debug" \
+         "tcp_client:tcp_client_debug" \
+         "serial_assistant:serial_assistant"; do \
+         app="${spec%%:*}"; out="${spec##*:}"; \
+         echo "==> build $app -> $out"; \
+         /venv/bin/pyinstaller --onefile --windowed --clean --noconfirm \
+           --distpath /out --name "$out" "${app}.py"; \
+       done
+
+FROM scratch
+COPY --from=builder /out /
